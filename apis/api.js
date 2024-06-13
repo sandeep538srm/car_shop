@@ -220,7 +220,7 @@ const update_cart = async (req, res) => {
 
 //delete product
 const delete_cart = async (req, res) => {
-  let p_id = req.body.p_id;
+  let {p_id} = req.body.p_id;
   let u_name = req.body.u_name;
   let obj = { p_id, u_name };
   try {
