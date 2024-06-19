@@ -1,16 +1,18 @@
 const Product = require("../model/product_s");
 const User = require("../model/user_s");
 const Cart = require("../model/cart_s");
+
 const products_all = async (req, res) => {
   try {
     const products = await Product.find();
-    console.log("data sent");
+    console.log("Products data sent");
     res.json(products);
   } catch (err) {
-    console.log("fetch error", err);
-    res.json("message", err);
+    console.log("Fetch error:", err);
+    res.status(500).json({ message: err.message });
   }
 };
+
 const insert_product = async (req, res) => {
   const product = new Product({
     p_id: req.body.p_id,
@@ -22,15 +24,16 @@ const insert_product = async (req, res) => {
   });
   try {
     const savedProduct = await product.save();
-    console.log("Product inserted");
-    res.send(savedProduct);
+    console.log("Product inserted:", savedProduct);
+    res.json(savedProduct);
   } catch (error) {
-    res.status(400).send(error);
+    console.error("Error inserting product:", error);
+    res.status(400).json({ message: error.message });
   }
 };
-//update product
+
 const update_product = async (req, res) => {
-  let p_id = req.body.p_id;
+  const p_id = req.body.p_id;
   const product = {
     p_id: req.body.p_id,
     p_name: req.body.p_name,
@@ -41,44 +44,47 @@ const update_product = async (req, res) => {
   };
   try {
     const updateProduct = await Product.updateOne({ p_id }, product);
-    if (updateProduct.modifiedCount != 0) {
-      console.log("Product Updated", updateProduct);
-      res.send({ update: "success" });
+    if (updateProduct.modifiedCount !== 0) {
+      console.log("Product updated:", updateProduct);
+      res.json({ update: "success" });
     } else {
-      console.log("Product not updated");
-      res.send({ update: "Record Not Found" });
+      console.log("Product not found for update");
+      res.json({ update: "Record Not Found" });
     }
   } catch (error) {
-    res.status(400).send(error);
+    console.error("Error updating product:", error);
+    res.status(400).json({ message: error.message });
   }
 };
 
-//delete product
 const delete_product = async (req, res) => {
-  let p_id = req.body.p_id;
+  const p_id = req.body.p_id;
   try {
-    const deletedproduct = await Product.deleteOne({ p_id });
-    if (deletedproduct.deletedCount != 0) {
-      console.log("Product Deleted");
-      res.send({ delete: "success" });
+    const deletedProduct = await Product.deleteOne({ p_id });
+    if (deletedProduct.deletedCount !== 0) {
+      console.log("Product deleted");
+      res.json({ delete: "success" });
     } else {
-      console.log("Product Not deleted");
-      res.send({ delete: "Record Not Found" });
+      console.log("Product not found for deletion");
+      res.json({ delete: "Record Not Found" });
     }
   } catch (error) {
-    res.status(400).send(error);
+    console.error("Error deleting product:", error);
+    res.status(400).json({ message: error.message });
   }
 };
+
 const user_all = async (req, res) => {
   try {
-    const user = await User.find();
-    console.log("data sent");
-    res.json(user);
+    const users = await User.find();
+    console.log("Users data sent");
+    res.json(users);
   } catch (err) {
-    console.log("fetch error", err);
-    res.json("message", err);
+    console.error("Fetch error:", err);
+    res.status(500).json({ message: err.message });
   }
 };
+
 const insert_user = async (req, res) => {
   const user = new User({
     u_id: req.body.u_id,
@@ -89,16 +95,17 @@ const insert_user = async (req, res) => {
     u_contact: req.body.u_contact,
   });
   try {
-    const saveduser = await user.save();
-    console.log("Product inserted");
-    res.send(saveduser);
+    const savedUser = await user.save();
+    console.log("User inserted:", savedUser);
+    res.json(savedUser);
   } catch (error) {
-    res.status(400).send(error);
+    console.error("Error inserting user:", error);
+    res.status(400).json({ message: error.message });
   }
 };
-//update product
+
 const update_user = async (req, res) => {
-  let u_id = req.body.u_id;
+  const u_id = req.body.u_id;
   const user = {
     u_id: req.body.u_id,
     u_name: req.body.u_name,
@@ -109,133 +116,117 @@ const update_user = async (req, res) => {
   };
   try {
     const updateUser = await User.updateOne({ u_id }, user);
-    if (updateUser.modifiedCount != 0) {
-      console.log("Product Updated", updateUser);
-      res.send({ update: "success" });
+    if (updateUser.modifiedCount !== 0) {
+      console.log("User updated:", updateUser);
+      res.json({ update: "success" });
     } else {
-      console.log("Product not updated");
-      res.send({ update: "Record Not Found" });
+      console.log("User not found for update");
+      res.json({ update: "Record Not Found" });
     }
   } catch (error) {
-    console.log("error updating");
-    res.status(400).send(error);
+    console.error("Error updating user:", error);
+    res.status(400).json({ message: error.message });
   }
 };
 
-//delete product
 const delete_user = async (req, res) => {
-  let u_id = req.body.u_id;
+  const u_id = req.body.u_id;
   try {
-    const deleteduser = await User.deleteOne({ u_id });
-    if (deleteduser.deletedCount != 0) {
-      console.log("Product Deleted");
-      res.send({ delete: "success" });
+    const deletedUser = await User.deleteOne({ u_id });
+    if (deletedUser.deletedCount !== 0) {
+      console.log("User deleted");
+      res.json({ delete: "success" });
     } else {
-      console.log("Product Not deleted");
-      res.send({ delete: "Record Not Found" });
+      console.log("User not found for deletion");
+      res.json({ delete: "Record Not Found" });
     }
   } catch (error) {
-    res.status(400).send(error);
+    console.error("Error deleting user:", error);
+    res.status(400).json({ message: error.message });
   }
 };
-const auth = async (req, res) => {
-  let u_name = req.body.u_name;
-  let u_pwd = req.body.u_pwd;
-  let obj = { u_name, u_pwd };
-  try {
-    const real = await User.findOne(obj);
 
-    if (real) {
-      console.log("success");
-      res.send({ user: "success" });
+const auth = async (req, res) => {
+  const { u_name, u_pwd } = req.body;
+  try {
+    const user = await User.findOne({ u_name, u_pwd });
+    if (user) {
+      console.log("Authentication successful");
+      res.json({ user: "success" });
     } else {
-      console.log("failure");
-      res.send({ user: "fail" });
+      console.log("Authentication failed");
+      res.json({ user: "fail" });
     }
   } catch (error) {
-    console.log("failure");
-    res.send({ user: "fail" });
+    console.error("Authentication error:", error);
+    res.status(400).json({ user: "fail", message: error.message });
   }
 };
-module.exports = {
-  products_all,
-  insert_product,
-  update_product,
-  delete_product,
-  user_all,
-  insert_user,
-  update_user,
-  delete_user,
-  auth,
-};
-////////////////////////////////////////////////////////carts
 
 const cart_all = async (req, res) => {
   try {
-    const cart = await Cart.find();
-    console.log("data sent");
-    res.json(cart);
+    const carts = await Cart.find();
+    console.log("Carts data sent");
+    res.json(carts);
   } catch (err) {
-    console.log("fetch error", err);
-    res.json("message", err);
+    console.error("Fetch error:", err);
+    res.status(500).json({ message: err.message });
   }
 };
+
 const insert_cart = async (req, res) => {
   const cart = new Cart({
     p_id: req.body.p_id,
     u_name: req.body.u_name,
     p_cost: req.body.p_cost,
     p_img: req.body.p_img,
+    quantity: req.body.quantity,
   });
   try {
-    const savedcart = await Cart.save();
-    console.log("Product inserted");
-    res.send(savedcart);
+    const savedCart = await cart.save();
+    console.log("Cart inserted:", savedCart);
+    res.json(savedCart);
   } catch (error) {
-    res.status(400).send(error);
-  }
-};
-//update product
-const update_cart = async (req, res) => {
-  let p_id = req.body.p_id;
-  const cart = {
-    p_id: req.body.p_id,
-    u_name: req.body.u_name,
-    p_cost: req.body.p_cost,
-    p_img: req.body.p_img,
-  };
-  try {
-    const updatecart = await Cart.updateOne({ p_id }, cart);
-    if (updatecart.modifiedCount != 0) {
-      console.log("Product Updated", updatecart);
-      res.send({ update: "success" });
-    } else {
-      console.log("Product not updated");
-      res.send({ update: "Record Not Found" });
-    }
-  } catch (error) {
-    res.status(400).send(error);
+    console.error("Error inserting cart:", error);
+    res.status(400).json({ message: error.message });
   }
 };
 
-//delete product
-const delete_cart = async (req, res) => {
-  let {p_id} = req.body.p_id;
-  let u_name = req.body.u_name;
-  let obj = { p_id, u_name };
+const update_cart = async (req, res) => {
+  const { p_id, u_name, p_cost, p_img, quantity } = req.body;
+  const cart = { p_id, u_name, p_cost, p_img, quantity };
   try {
-    const deletedcart = await Cart.deleteOne({ obj });
-    if (deletedcart.deletedCount != 0) {
-      console.log("Product Deleted");
-      res.send({ delete: "success" });
+    const updateCart = await Cart.updateOne({ p_id, u_name }, cart);
+    if (updateCart.modifiedCount !== 0) {
+      console.log("Cart updated:", updateCart);
+      res.json({ update: "success" });
     } else {
-      console.log("Product Not deleted");
-      res.send({ delete: "Record Not Found" });
+      console.log("Cart not found for update");
+      res.json({ update: "Record Not Found" });
     }
   } catch (error) {
-    res.status(400).send(error);
+    console.error("Error updating cart:", error);
+    res.status(400).json({ message: error.message });
   }
 };
+
+const delete_cart = async (req, res) => {
+  const { p_id, u_name } = req.body;
+  try {
+    const deletedCart = await Cart.deleteOne({ p_id, u_name });
+    if (deletedCart.deletedCount !== 0) {
+      console.log("Cart deleted");
+      res.json({ delete: "success" });
+    } else {
+      console.log("Cart not found for deletion");
+      res.json({ delete: "Record Not Found" });
+    }
+  } catch (error) {
+    console.error("Error deleting cart:", error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
 module.exports = {
   products_all,
   insert_product,
