@@ -74,16 +74,28 @@ const delete_product = async (req, res) => {
   }
 };
 
+// const user_all = async (req, res) => {
+//   try {
+//     const users = await User.find();
+//     console.log("Users data sent");
+//     res.json(users);
+//   } catch (err) {
+//     console.error("Fetch error:", err);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 const user_all = async (req, res) => {
+  u_name = req.body.u_name;
   try {
-    const users = await User.find();
-    console.log("Users data sent");
-    res.json(users);
-  } catch (err) {
-    console.error("Fetch error:", err);
-    res.status(500).json({ message: err.message });
+    const cartItems = await Cart.find({ u_name: u_name });
+    console.log("Cart items are: ", cartItems);
+    res.json(cartItems);
+  } catch (error) {
+    console.log("Cart Fetch error :- ", error);
+    res.json({ message: error });
   }
 };
+
 
 const insert_user = async (req, res) => {
   const user = new User({
